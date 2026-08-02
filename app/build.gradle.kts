@@ -27,7 +27,9 @@ android {
     compileSdk = project.libs.versions.app.build.compileSDKVersion.get().toInt()
 
     defaultConfig {
-        applicationId = project.property("APP_ID").toString()
+        // Install alongside any F-Droid Fossify Phone; the namespace (and the
+        // Kotlin packages) stay org.fossify.phone.
+        applicationId = "com.tubbles.phone"
         minSdk = project.libs.versions.app.build.minimumSDK.get().toInt()
         targetSdk = project.libs.versions.app.build.targetSDK.get().toInt()
         versionName = project.property("VERSION_NAME").toString()

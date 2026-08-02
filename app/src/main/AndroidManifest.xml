@@ -196,6 +196,17 @@
             android:enabled="true"
             android:exported="false" />
 
+        <!-- PineTime watch DTMF keys, re-broadcast to this package by the
+             ClockSync hub app (see KeyToneReceiver). Must be exported: the
+             sender is another app. -->
+        <receiver
+            android:name=".receivers.KeyToneReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="nodomain.freeyourgadget.gadgetbridge.ble_api.events.CHARACTERISTIC_CHANGED" />
+            </intent-filter>
+        </receiver>
+
         <activity-alias
             android:name=".activities.SplashActivity.Red"
             android:enabled="false"
