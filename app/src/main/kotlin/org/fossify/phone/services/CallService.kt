@@ -14,6 +14,7 @@ import org.fossify.phone.extensions.powerManager
 import org.fossify.phone.helpers.CallManager
 import org.fossify.phone.helpers.CallNotificationManager
 import org.fossify.phone.helpers.NoCall
+import org.fossify.phone.helpers.WatchCallState
 import org.fossify.phone.models.Events
 import org.greenrobot.eventbus.EventBus
 
@@ -28,6 +29,7 @@ class CallService : InCallService() {
             } else {
                 callNotificationManager.setupNotification()
             }
+            WatchCallState.onCallStateChanged(this@CallService, call)
         }
     }
 
@@ -36,6 +38,7 @@ class CallService : InCallService() {
         CallManager.onCallAdded(call)
         CallManager.inCallService = this
         call.registerCallback(callListener)
+        WatchCallState.onCallStateChanged(this, call)
 
         // Incoming/Outgoing (locked): high priority (FSI)
         // Incoming (unlocked): if user opted in, low priority ➜ manual activity start, otherwise high priority (FSI)
@@ -73,6 +76,7 @@ class CallService : InCallService() {
         if (CallManager.getPhoneState() == NoCall) {
             CallManager.inCallService = null
             callNotificationManager.cancelNotification()
+            WatchCallState.onNoCall(this)
         } else {
             callNotificationManager.setupNotification()
             if (wasPrimaryCall) {

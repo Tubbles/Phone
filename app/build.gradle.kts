@@ -30,6 +30,14 @@ android {
         // Install alongside any F-Droid Fossify Phone; the namespace (and the
         // Kotlin packages) stay org.fossify.phone.
         applicationId = "com.tubbles.phone"
+
+        // The PineTime this deployment reports call state to, and the
+        // Gadgetbridge that owns the BLE link (see WatchCallState). An empty
+        // MAC disables the reporting.
+        buildConfigField("String", "WATCH_MAC", "\"DB:8F:A2:1A:A1:DB\"")
+        buildConfigField(
+            "String", "GADGETBRIDGE_PACKAGE", "\"nodomain.freeyourgadget.gadgetbridge.t\""
+        )
         minSdk = project.libs.versions.app.build.minimumSDK.get().toInt()
         targetSdk = project.libs.versions.app.build.targetSDK.get().toInt()
         versionName = project.property("VERSION_NAME").toString()
