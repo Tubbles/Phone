@@ -28,6 +28,7 @@ class KeyToneReceiver : BroadcastReceiver() {
         private const val EXTRA_CHARACTERISTIC = "EXTRA_CHARACTERISTIC"
         private const val EXTRA_PAYLOAD = "EXTRA_PAYLOAD"
         private const val KEY_END_CALL = 'E'
+        private const val KEY_ANSWER_CALL = 'A'
         private val VALID_KEYS = "0123456789*#".toSet()
     }
 
@@ -43,6 +44,11 @@ class KeyToneReceiver : BroadcastReceiver() {
         val key = payloadHex.toIntOrNull(16)?.toChar() ?: return
         when {
             key == KEY_END_CALL -> CallManager.reject()
+            // Answering goes through this app for the same reason as ending:
+            // Gadgetbridge's TelecomManager.acceptRingingCall is deprecated
+            // and can be silently refused, while the InCallService always
+            // owns the ringing call. accept() no-ops without a call.
+            key == KEY_ANSWER_CALL -> CallManager.accept()
             key in VALID_KEYS -> CallManager.keypad(key)
         }
     }
