@@ -41,7 +41,11 @@ android {
         minSdk = project.libs.versions.app.build.minimumSDK.get().toInt()
         targetSdk = project.libs.versions.app.build.targetSDK.get().toInt()
         versionName = project.property("VERSION_NAME").toString()
-        versionCode = project.property("VERSION_CODE").toString().toInt()
+        // CI builds get a monotonically increasing versionCode (base * 1000 +
+        // workflow run number) so every artifact can update the previous one.
+        versionCode = System.getenv("PINETIME_CI_VERSION_CODE")
+            ?.let { project.property("VERSION_CODE").toString().toInt() * 1000 + it.toInt() }
+            ?: project.property("VERSION_CODE").toString().toInt()
         setProperty("archivesBaseName", "phone-$versionCode")
     }
 
@@ -63,6 +67,18 @@ android {
         } else {
             logger.warn("Warning: No signing config found. Build will be unsigned.")
         }
+        // CI debug signing with an explicit committed keystore (seeding
+        // ~/.android/debug.keystore on the runner proved unreliable: AGP
+        // resolved a different path and generated a throwaway key per run,
+        // so no artifact could ever update the previous install).
+        System.getenv("PINETIME_DEBUG_KEYSTORE")?.let { keystorePath ->
+            register("ciDebug") {
+                storeFile = file(keystorePath)
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
+        }
     }
 
     buildFeatures {
@@ -73,6 +89,9 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            if (System.getenv("PINETIME_DEBUG_KEYSTORE") != null) {
+                signingConfig = signingConfigs.getByName("ciDebug")
+            }
         }
         release {
             isMinifyEnabled = true
