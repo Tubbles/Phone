@@ -107,4 +107,5 @@
     <string name="intercom_widget_description">Slår på eller av automatisk dörröppning</string>
     <string name="intercom_short_off">Auto-öppning av</string>
     <string name="intercom_short_armed">På: %1$d kvar, till %2$s</string>
+    <string name="use_as_intercom_number">Använd som porttelefonens nummer</string>
 </resources>

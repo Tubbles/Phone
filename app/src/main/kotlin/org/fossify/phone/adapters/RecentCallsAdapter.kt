@@ -42,6 +42,7 @@ import org.fossify.commons.extensions.highlightTextPart
 import org.fossify.commons.extensions.isOrWasThankYouInstalled
 import org.fossify.commons.extensions.launchSendSMSIntent
 import org.fossify.commons.extensions.setupViewBackground
+import org.fossify.commons.extensions.toast
 import org.fossify.commons.helpers.PERMISSION_WRITE_CALL_LOG
 import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.commons.helpers.ensureBackgroundThread
@@ -296,6 +297,13 @@ class RecentCallsAdapter(
         finishActMode()
     }
 
+    private fun useAsIntercomNumber() {
+        val recentCall = getSelectedItems().firstOrNull() ?: return
+        activity.config.intercomNumber = recentCall.phoneNumber
+        activity.toast(activity.getString(R.string.intercom_number_line, recentCall.phoneNumber))
+        finishActMode()
+    }
+
     private fun askConfirmRemove() {
         ConfirmationDialog(activity, activity.getString(R.string.remove_confirmation)) {
             activity.handlePermission(PERMISSION_WRITE_CALL_LOG) {
@@ -377,6 +385,7 @@ class RecentCallsAdapter(
                 findItem(R.id.cab_view_details).isVisible = contact != null && !call.isUnknownNumber
                 findItem(R.id.cab_add_number).isVisible = !call.isUnknownNumber
                 findItem(R.id.cab_copy_number).isVisible = !call.isUnknownNumber
+                findItem(R.id.cab_use_as_intercom_number).isVisible = !call.isUnknownNumber
                 findItem(R.id.cab_show_call_details).isVisible = !call.isUnknownNumber
                 findItem(R.id.cab_block_number).title = activity.addLockedLabelIfNeeded(R.string.block_number)
                 findItem(R.id.cab_block_number).isVisible = isNougatPlus() && !call.isUnknownNumber
@@ -441,6 +450,12 @@ class RecentCallsAdapter(
                     R.id.cab_copy_number -> {
                         executeItemMenuOperation(callId) {
                             copyNumber()
+                        }
+                    }
+
+                    R.id.cab_use_as_intercom_number -> {
+                        executeItemMenuOperation(callId) {
+                            useAsIntercomNumber()
                         }
                     }
 

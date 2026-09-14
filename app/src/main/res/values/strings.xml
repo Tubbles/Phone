@@ -125,4 +125,5 @@
     <string name="intercom_widget_description">Turns the intercom auto-open on or off</string>
     <string name="intercom_short_off">Auto-open off</string>
     <string name="intercom_short_armed">On: %1$d left, until %2$s</string>
+    <string name="use_as_intercom_number">Use as intercom number</string>
 </resources>
