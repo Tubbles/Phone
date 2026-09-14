@@ -3,6 +3,7 @@ package org.fossify.phone.fragments
 import android.content.Context
 import android.content.Intent
 import android.text.format.DateFormat
+import android.text.format.DateUtils
 import android.util.AttributeSet
 import org.fossify.commons.extensions.beGone
 import org.fossify.commons.extensions.beVisible
@@ -35,8 +36,8 @@ class IntercomFragment(
     }
 
     override fun setupFragment() {
-        binding.intercomOpenings.setText(DEFAULT_OPENINGS)
-        binding.intercomHours.setText(DEFAULT_HOURS)
+        binding.intercomOpenings.setText(context.config.intercomLastOpenings.toString())
+        binding.intercomHours.setText(context.config.intercomLastHours.toString())
         binding.intercomToggle.setOnClickListener {
             toggleAutoOpen()
         }
@@ -47,6 +48,7 @@ class IntercomFragment(
     override fun setupColors(textColor: Int, primaryColor: Int, properPrimaryColor: Int) {
         binding.intercomStatus.setTextColor(textColor)
         binding.intercomNumber.setTextColor(textColor)
+        binding.intercomLastOpened.setTextColor(textColor)
         binding.intercomOpeningsLabel.setTextColor(textColor)
         binding.intercomHoursLabel.setTextColor(textColor)
     }
@@ -57,6 +59,7 @@ class IntercomFragment(
 
     fun refreshItems() {
         refreshIntercomNumber()
+        refreshLastOpened()
         if (IntercomAutoOpen.isArmed(context.config)) {
             showArmedState()
         } else {
@@ -73,6 +76,23 @@ class IntercomFragment(
             binding.intercomNumber.text = context.getString(R.string.intercom_number_line, intercomNumber)
         }
     }
+
+    /** Shows when the door was opened last, once that has ever happened. */
+    private fun refreshLastOpened() {
+        val lastOpenedAt = context.config.intercomLastOpenedAt
+        if (lastOpenedAt > 0) {
+            binding.intercomLastOpened.text = context.getString(R.string.intercom_last_opened, formatLastOpened(lastOpenedAt))
+            binding.intercomLastOpened.beVisible()
+        } else {
+            binding.intercomLastOpened.beGone()
+        }
+    }
+
+    private fun formatLastOpened(lastOpenedAt: Long) = DateUtils.formatDateTime(
+        context,
+        lastOpenedAt,
+        DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_ABBREV_ALL
+    )
 
     private fun showArmedState() {
         val config = context.config
@@ -117,10 +137,5 @@ class IntercomFragment(
 
         IntercomAutoOpen.arm(context.config, openings, hours)
         return true
-    }
-
-    companion object {
-        private const val DEFAULT_OPENINGS = "1"
-        private const val DEFAULT_HOURS = "6"
     }
 }

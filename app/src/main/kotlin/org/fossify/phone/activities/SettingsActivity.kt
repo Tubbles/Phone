@@ -430,6 +430,13 @@ class SettingsActivity : SimpleActivity() {
             readValue = { config.intercomToneRepeatSeconds },
             writeValue = { config.intercomToneRepeatSeconds = it }
         )
+        setupIntercomNumber(
+            holder = binding.settingsIntercomHangUpSecondsHolder,
+            valueView = binding.settingsIntercomHangUpSeconds,
+            titleId = R.string.intercom_hang_up_seconds,
+            readValue = { config.intercomHangUpSeconds },
+            writeValue = { config.intercomHangUpSeconds = it }
+        )
     }
 
     private fun setupIntercomPhoneNumber() {

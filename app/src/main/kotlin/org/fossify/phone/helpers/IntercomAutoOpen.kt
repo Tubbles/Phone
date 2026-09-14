@@ -26,7 +26,8 @@ import org.fossify.phone.extensions.isOutgoing
  *
  * Only the intercom's own number is treated this way: an incoming call whose
  * number does not match the one in [Config] is left alone, and a hidden or
- * missing number never matches.
+ * missing number never matches. A call arriving while another call is already
+ * up is left alone too, so answering it can never put that other call on hold.
  *
  * One opening is counted when the call goes active, since that is the moment a
  * door opening is actually being attempted. A call that is declined or that
@@ -49,7 +50,8 @@ object IntercomAutoOpen {
         val ringMillis: Long,
         val answerDelayMillis: Long,
         val toneLengthMillis: Long,
-        val toneRepeatMillis: Long
+        val toneRepeatMillis: Long,
+        val hangUpMillis: Long
     )
 
     private val handler = Handler(Looper.getMainLooper())
@@ -77,6 +79,8 @@ object IntercomAutoOpen {
     fun arm(config: Config, openings: Int, hours: Int) {
         config.intercomAutoOpenRemaining = openings
         config.intercomAutoOpenUntil = System.currentTimeMillis() + hours * MILLIS_PER_HOUR
+        config.intercomLastOpenings = openings
+        config.intercomLastHours = hours
     }
 
     /** Disarms auto-open, leaving the static settings alone. */
@@ -88,6 +92,11 @@ object IntercomAutoOpen {
     /** Starts tracking [call] if it is the armed-for intercom calling in. */
     fun onCallAdded(context: Context, call: Call) {
         if (call.isOutgoing() || call.getStateCompat() != Call.STATE_RINGING) {
+            return
+        }
+        // CallService.onCallAdded registers the call with CallManager before calling here, so a
+        // SingleCall state means this call is the only one and answering it holds nothing else.
+        if (CallManager.getPhoneState() !is SingleCall) {
             return
         }
         if (trackedCall != null) {
@@ -131,7 +140,8 @@ object IntercomAutoOpen {
         ringMillis = config.intercomRingSeconds * MILLIS_PER_SECOND,
         answerDelayMillis = config.intercomAnswerDelaySeconds * MILLIS_PER_SECOND,
         toneLengthMillis = config.intercomToneLengthMs.toLong(),
-        toneRepeatMillis = config.intercomToneRepeatSeconds * MILLIS_PER_SECOND
+        toneRepeatMillis = config.intercomToneRepeatSeconds * MILLIS_PER_SECOND,
+        hangUpMillis = config.intercomHangUpSeconds * MILLIS_PER_SECOND
     )
 
     private fun answerCall(call: Call) {
@@ -152,16 +162,20 @@ object IntercomAutoOpen {
         handler.removeCallbacksAndMessages(null)
         countOneOpening(context.config)
         handler.postDelayed({ playTone(call, timing) }, timing.answerDelayMillis)
+        if (timing.hangUpMillis > 0) {
+            handler.postDelayed({ call.disconnect() }, timing.answerDelayMillis + timing.hangUpMillis)
+        }
     }
 
     private fun countOneOpening(config: Config) {
         config.intercomAutoOpenRemaining = maxOf(0, config.intercomAutoOpenRemaining - 1)
+        config.intercomLastOpenedAt = System.currentTimeMillis()
     }
 
     /**
-     * Plays the door key and schedules the next attempt. The intercom is
-     * expected to hang up once the door is open, which stops the loop, so there
-     * is deliberately no repeat limit.
+     * Plays the door key and schedules the next attempt. The loop ends when the
+     * intercom hangs up, which it is expected to do once the door is open, or
+     * when the hang-up timeout fires and drops the call from this side.
      */
     private fun playTone(call: Call, timing: IntercomTiming) {
         call.playDtmfTone(timing.key)

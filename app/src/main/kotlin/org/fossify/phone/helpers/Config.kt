@@ -160,6 +160,10 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getInt(INTERCOM_TONE_REPEAT_SECONDS, INTERCOM_DEFAULT_TONE_REPEAT_SECONDS)
         set(intercomToneRepeatSeconds) = prefs.edit().putInt(INTERCOM_TONE_REPEAT_SECONDS, intercomToneRepeatSeconds).apply()
 
+    var intercomHangUpSeconds: Int
+        get() = prefs.getInt(INTERCOM_HANG_UP_SECONDS, INTERCOM_DEFAULT_HANG_UP_SECONDS)
+        set(intercomHangUpSeconds) = prefs.edit().putInt(INTERCOM_HANG_UP_SECONDS, intercomHangUpSeconds).apply()
+
     var intercomAutoOpenRemaining: Int
         get() = prefs.getInt(INTERCOM_AUTO_OPEN_REMAINING, 0)
         set(intercomAutoOpenRemaining) = prefs.edit().putInt(INTERCOM_AUTO_OPEN_REMAINING, intercomAutoOpenRemaining).apply()
@@ -167,4 +171,16 @@ class Config(context: Context) : BaseConfig(context) {
     var intercomAutoOpenUntil: Long
         get() = prefs.getLong(INTERCOM_AUTO_OPEN_UNTIL, 0L)
         set(intercomAutoOpenUntil) = prefs.edit().putLong(INTERCOM_AUTO_OPEN_UNTIL, intercomAutoOpenUntil).apply()
+
+    var intercomLastOpenings: Int
+        get() = prefs.getInt(INTERCOM_LAST_OPENINGS, INTERCOM_DEFAULT_OPENINGS)
+        set(intercomLastOpenings) = prefs.edit().putInt(INTERCOM_LAST_OPENINGS, intercomLastOpenings).apply()
+
+    var intercomLastHours: Int
+        get() = prefs.getInt(INTERCOM_LAST_HOURS, INTERCOM_DEFAULT_HOURS)
+        set(intercomLastHours) = prefs.edit().putInt(INTERCOM_LAST_HOURS, intercomLastHours).apply()
+
+    var intercomLastOpenedAt: Long
+        get() = prefs.getLong(INTERCOM_LAST_OPENED_AT, 0L)
+        set(intercomLastOpenedAt) = prefs.edit().putLong(INTERCOM_LAST_OPENED_AT, intercomLastOpenedAt).apply()
 }

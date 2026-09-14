@@ -25,15 +25,23 @@
             android:id="@+id/intercom_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_margin"
             android:gravity="center"
             android:textSize="@dimen/normal_text_size"
             tools:text="Intercom: +46701234567" />
+
+        <org.fossify.commons.views.MyTextView
+            android:id="@+id/intercom_last_opened"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="@dimen/normal_text_size"
+            tools:text="Last opened Sep 14, 14:32" />
 
         <LinearLayout
             android:id="@+id/intercom_openings_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_margin"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 

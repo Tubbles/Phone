@@ -116,4 +116,6 @@
     <string name="intercom_number_not_set">No intercom number set</string>
     <string name="intercom_number_line">Intercom: %s</string>
     <string name="intercom_number_missing">Set the intercom number in Settings first</string>
+    <string name="intercom_hang_up_seconds">Hang up after (seconds, 0 = never)</string>
+    <string name="intercom_last_opened">Last opened %s</string>
 </resources>

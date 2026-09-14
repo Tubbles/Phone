@@ -590,6 +590,29 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/settings_intercom_hang_up_seconds_holder"
+                style="@style/SettingsHolderTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/settings_intercom_hang_up_seconds_label"
+                    style="@style/SettingsTextLabelStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/intercom_hang_up_seconds" />
+
+                <org.fossify.commons.views.MyTextView
+                    android:id="@+id/settings_intercom_hang_up_seconds"
+                    style="@style/SettingsTextValueStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/settings_intercom_hang_up_seconds_label"
+                    tools:text="30" />
+
+            </RelativeLayout>
+
             <include
                 android:id="@+id/settings_migration_divider"
                 layout="@layout/divider" />

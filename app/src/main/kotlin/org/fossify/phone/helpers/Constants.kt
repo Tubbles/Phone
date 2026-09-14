@@ -25,8 +25,12 @@ const val INTERCOM_RING_SECONDS = "intercom_ring_seconds"
 const val INTERCOM_ANSWER_DELAY_SECONDS = "intercom_answer_delay_seconds"
 const val INTERCOM_TONE_LENGTH_MS = "intercom_tone_length_ms"
 const val INTERCOM_TONE_REPEAT_SECONDS = "intercom_tone_repeat_seconds"
+const val INTERCOM_HANG_UP_SECONDS = "intercom_hang_up_seconds"
 const val INTERCOM_AUTO_OPEN_REMAINING = "intercom_auto_open_remaining"
 const val INTERCOM_AUTO_OPEN_UNTIL = "intercom_auto_open_until"
+const val INTERCOM_LAST_OPENINGS = "intercom_last_openings"
+const val INTERCOM_LAST_HOURS = "intercom_last_hours"
+const val INTERCOM_LAST_OPENED_AT = "intercom_last_opened_at"
 
 // Local to this app, deliberately above every TAB_* bit the commons library defines
 const val TAB_INTERCOM = 128
@@ -47,4 +51,7 @@ const val INTERCOM_DEFAULT_RING_SECONDS = 2 // Let it ring this long before answ
 const val INTERCOM_DEFAULT_ANSWER_DELAY_SECONDS = 2 // Wait this long after answering before the first tone
 const val INTERCOM_DEFAULT_TONE_LENGTH_MS = 500 // How long each tone is held down
 const val INTERCOM_DEFAULT_TONE_REPEAT_SECONDS = 4 // Retry interval while the call is still up
+const val INTERCOM_DEFAULT_HANG_UP_SECONDS = 30 // Hang up this long after the first tone, 0 to never hang up
+const val INTERCOM_DEFAULT_OPENINGS = 1 // How many openings the arming tab suggests
+const val INTERCOM_DEFAULT_HOURS = 6 // How many hours the arming tab suggests
 const val INTERCOM_ALLOWED_KEYS = "0123456789*#" // The DTMF characters the door key may be picked from

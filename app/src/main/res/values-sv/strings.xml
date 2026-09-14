@@ -98,4 +98,6 @@
     <string name="intercom_number_not_set">Inget nummer angivet för porttelefonen</string>
     <string name="intercom_number_line">Porttelefon: %s</string>
     <string name="intercom_number_missing">Ange porttelefonens nummer i inställningarna först</string>
+    <string name="intercom_hang_up_seconds">Lägg på efter (sekunder, 0 = aldrig)</string>
+    <string name="intercom_last_opened">Senast öppnad %s</string>
 </resources>
