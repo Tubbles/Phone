@@ -1,12 +1,14 @@
 package org.fossify.phone.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.text.format.DateFormat
 import android.util.AttributeSet
 import org.fossify.commons.extensions.beGone
 import org.fossify.commons.extensions.beVisible
 import org.fossify.commons.extensions.toast
 import org.fossify.phone.R
+import org.fossify.phone.activities.SettingsActivity
 import org.fossify.phone.databinding.FragmentIntercomBinding
 import org.fossify.phone.extensions.config
 import org.fossify.phone.helpers.IntercomAutoOpen
@@ -44,6 +46,7 @@ class IntercomFragment(
 
     override fun setupColors(textColor: Int, primaryColor: Int, properPrimaryColor: Int) {
         binding.intercomStatus.setTextColor(textColor)
+        binding.intercomNumber.setTextColor(textColor)
         binding.intercomOpeningsLabel.setTextColor(textColor)
         binding.intercomHoursLabel.setTextColor(textColor)
     }
@@ -53,10 +56,21 @@ class IntercomFragment(
     override fun onSearchQueryChanged(text: String) {}
 
     fun refreshItems() {
+        refreshIntercomNumber()
         if (IntercomAutoOpen.isArmed(context.config)) {
             showArmedState()
         } else {
             showDisarmedState()
+        }
+    }
+
+    /** Shows which number auto-open answers, or that none is set yet. */
+    private fun refreshIntercomNumber() {
+        val intercomNumber = context.config.intercomNumber
+        if (intercomNumber.isBlank()) {
+            binding.intercomNumber.setText(R.string.intercom_number_not_set)
+        } else {
+            binding.intercomNumber.text = context.getString(R.string.intercom_number_line, intercomNumber)
         }
     }
 
@@ -88,6 +102,12 @@ class IntercomFragment(
 
     /** Arms auto-open from the two inputs, or complains and does nothing. */
     private fun armFromInputs(): Boolean {
+        if (!IntercomAutoOpen.canArm(context.config)) {
+            context.toast(R.string.intercom_number_missing)
+            context.startActivity(Intent(context, SettingsActivity::class.java))
+            return false
+        }
+
         val openings = binding.intercomOpenings.text.toString().toIntOrNull()
         val hours = binding.intercomHours.text.toString().toIntOrNull()
         if (openings == null || openings < 1 || hours == null || hours < 1) {

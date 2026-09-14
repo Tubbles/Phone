@@ -5,6 +5,8 @@ import android.os.Handler
 import android.os.Looper
 import android.telecom.Call
 import android.telecom.VideoProfile
+import android.telephony.PhoneNumberUtils
+import org.fossify.commons.extensions.normalizePhoneNumber
 import org.fossify.phone.extensions.config
 import org.fossify.phone.extensions.getStateCompat
 import org.fossify.phone.extensions.isOutgoing
@@ -21,6 +23,10 @@ import org.fossify.phone.extensions.isOutgoing
  * This has to live in the dialer: only the default dialer holds the
  * InCallService, and therefore only it owns the [Call] object needed to answer
  * a call and to inject DTMF into it. No other app on the phone can do either.
+ *
+ * Only the intercom's own number is treated this way: an incoming call whose
+ * number does not match the one in [Config] is left alone, and a hidden or
+ * missing number never matches.
  *
  * One opening is counted when the call goes active, since that is the moment a
  * door opening is actually being attempted. A call that is declined or that
@@ -55,6 +61,18 @@ object IntercomAutoOpen {
     fun isArmed(config: Config, nowMillis: Long = System.currentTimeMillis()): Boolean =
         config.intercomAutoOpenRemaining > 0 && nowMillis < config.intercomAutoOpenUntil
 
+    /** True when [callerNumber] is the intercom calling, by its stored number. */
+    fun isIntercomCaller(intercomNumber: String, callerNumber: String?): Boolean {
+        if (intercomNumber.isBlank() || callerNumber == null) {
+            return false
+        }
+
+        return PhoneNumberUtils.compare(intercomNumber.normalizePhoneNumber(), callerNumber.normalizePhoneNumber())
+    }
+
+    /** True while there is an intercom number to match incoming calls against. */
+    fun canArm(config: Config): Boolean = config.intercomNumber.isNotBlank()
+
     /** Arms auto-open for [openings] more calls, expiring [hours] from now. */
     fun arm(config: Config, openings: Int, hours: Int) {
         config.intercomAutoOpenRemaining = openings
@@ -67,7 +85,7 @@ object IntercomAutoOpen {
         config.intercomAutoOpenUntil = 0L
     }
 
-    /** Starts tracking [call] if it is an incoming call and auto-open is armed. */
+    /** Starts tracking [call] if it is the armed-for intercom calling in. */
     fun onCallAdded(context: Context, call: Call) {
         if (call.isOutgoing() || call.getStateCompat() != Call.STATE_RINGING) {
             return
@@ -77,6 +95,10 @@ object IntercomAutoOpen {
         }
         val config = context.config
         if (!isArmed(config)) {
+            return
+        }
+        val callerNumber = call.details.handle?.schemeSpecificPart
+        if (!isIntercomCaller(config.intercomNumber, callerNumber)) {
             return
         }
         val timing = readTiming(config)

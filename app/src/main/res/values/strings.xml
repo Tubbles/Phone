@@ -112,4 +112,8 @@
     <string name="intercom_auto_open_off">Auto-open is off</string>
     <string name="intercom_auto_open_armed">Auto-open is on: %1$d left, until %2$s</string>
     <string name="intercom_invalid_inputs">Enter whole numbers, 1 or larger</string>
+    <string name="intercom_number">Intercom number</string>
+    <string name="intercom_number_not_set">No intercom number set</string>
+    <string name="intercom_number_line">Intercom: %s</string>
+    <string name="intercom_number_missing">Set the intercom number in Settings first</string>
 </resources>

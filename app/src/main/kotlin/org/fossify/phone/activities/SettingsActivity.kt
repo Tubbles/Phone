@@ -41,6 +41,7 @@ import org.fossify.commons.views.MyTextView
 import org.fossify.phone.R
 import org.fossify.phone.databinding.ActivitySettingsBinding
 import org.fossify.phone.dialogs.EnterNumberDialog
+import org.fossify.phone.dialogs.EnterPhoneNumberDialog
 import org.fossify.phone.dialogs.ExportCallHistoryDialog
 import org.fossify.phone.dialogs.ManageVisibleTabsDialog
 import org.fossify.phone.extensions.canLaunchAccountsConfiguration
@@ -399,6 +400,7 @@ class SettingsActivity : SimpleActivity() {
     }
 
     private fun setupIntercom() {
+        setupIntercomPhoneNumber()
         setupIntercomKey()
         setupIntercomNumber(
             holder = binding.settingsIntercomRingSecondsHolder,
@@ -428,6 +430,26 @@ class SettingsActivity : SimpleActivity() {
             readValue = { config.intercomToneRepeatSeconds },
             writeValue = { config.intercomToneRepeatSeconds = it }
         )
+    }
+
+    private fun setupIntercomPhoneNumber() {
+        refreshIntercomPhoneNumber()
+        binding.settingsIntercomNumberHolder.setOnClickListener {
+            EnterPhoneNumberDialog(this@SettingsActivity, R.string.intercom_number, config.intercomNumber) { enteredValue ->
+                config.intercomNumber = enteredValue.trim()
+                refreshIntercomPhoneNumber()
+            }
+        }
+    }
+
+    /** Shows the stored intercom number, or says that there is none yet. */
+    private fun refreshIntercomPhoneNumber() {
+        val intercomNumber = config.intercomNumber
+        if (intercomNumber.isBlank()) {
+            binding.settingsIntercomNumber.setText(R.string.intercom_number_not_set)
+        } else {
+            binding.settingsIntercomNumber.text = intercomNumber
+        }
     }
 
     private fun setupIntercomKey() {

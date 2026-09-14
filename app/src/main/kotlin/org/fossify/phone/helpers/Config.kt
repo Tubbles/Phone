@@ -136,6 +136,10 @@ class Config(context: Context) : BaseConfig(context) {
         get() = prefs.getBoolean(ALWAYS_SHOW_FULLSCREEN, false)
         set(alwaysShowFullscreen) = prefs.edit().putBoolean(ALWAYS_SHOW_FULLSCREEN, alwaysShowFullscreen).apply()
 
+    var intercomNumber: String
+        get() = prefs.getString(INTERCOM_NUMBER, "") ?: ""
+        set(intercomNumber) = prefs.edit().putString(INTERCOM_NUMBER, intercomNumber).apply()
+
     var intercomKey: String
         get() = prefs.getString(INTERCOM_KEY, INTERCOM_DEFAULT_KEY) ?: INTERCOM_DEFAULT_KEY
         set(intercomKey) = prefs.edit().putString(INTERCOM_KEY, intercomKey).apply()

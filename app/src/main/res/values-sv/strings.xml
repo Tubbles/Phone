@@ -94,4 +94,8 @@
     <string name="intercom_auto_open_off">Automatisk öppning är av</string>
     <string name="intercom_auto_open_armed">Automatisk öppning är på: %1$d kvar, till %2$s</string>
     <string name="intercom_invalid_inputs">Ange heltal, 1 eller större</string>
+    <string name="intercom_number">Porttelefonens nummer</string>
+    <string name="intercom_number_not_set">Inget nummer angivet för porttelefonen</string>
+    <string name="intercom_number_line">Porttelefon: %s</string>
+    <string name="intercom_number_missing">Ange porttelefonens nummer i inställningarna först</string>
 </resources>
