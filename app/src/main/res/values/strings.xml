@@ -95,4 +95,13 @@
         Haven't found some strings? There's more at
         https://github.com/FossifyOrg/Commons/tree/master/commons/src/main/res
     -->
+
+    <!-- Intercom auto-open -->
+    <string name="intercom">Intercom</string>
+    <string name="intercom_key">Door-opening key</string>
+    <string name="intercom_ring_seconds">Ring before answering (seconds)</string>
+    <string name="intercom_answer_delay_seconds">Wait after answering (seconds)</string>
+    <string name="intercom_tone_length_ms">Tone length (milliseconds)</string>
+    <string name="intercom_tone_repeat_seconds">Repeat the tone every (seconds)</string>
+    <string name="invalid_number">Enter a whole number, 0 or larger</string>
 </resources>

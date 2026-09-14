@@ -77,4 +77,13 @@
     <string name="call_notification_channel_high_priority">Samtalsstatus (hög prioritet)</string>
     <string name="calling_accounts">Konton för samtal</string>
     <string name="faq_2_text">På grund av systembegränsningar går det bara att ringa nödsamtal via systemets standardtelefonapp. För att säkerställa att nödsamtal fungerar korrekt måste du låta systemappen vara installerad och aktiverad.</string>
+
+    <!-- Intercom auto-open -->
+    <string name="intercom">Porttelefon</string>
+    <string name="intercom_key">Dörröppningsknapp</string>
+    <string name="intercom_ring_seconds">Ring innan svar (sekunder)</string>
+    <string name="intercom_answer_delay_seconds">Vänta efter svar (sekunder)</string>
+    <string name="intercom_tone_length_ms">Tonlängd (millisekunder)</string>
+    <string name="intercom_tone_repeat_seconds">Upprepa tonen var (sekunder)</string>
+    <string name="invalid_number">Ange ett heltal, 0 eller större</string>
 </resources>

@@ -135,4 +135,32 @@ class Config(context: Context) : BaseConfig(context) {
     var alwaysShowFullscreen: Boolean
         get() = prefs.getBoolean(ALWAYS_SHOW_FULLSCREEN, false)
         set(alwaysShowFullscreen) = prefs.edit().putBoolean(ALWAYS_SHOW_FULLSCREEN, alwaysShowFullscreen).apply()
+
+    var intercomKey: String
+        get() = prefs.getString(INTERCOM_KEY, INTERCOM_DEFAULT_KEY) ?: INTERCOM_DEFAULT_KEY
+        set(intercomKey) = prefs.edit().putString(INTERCOM_KEY, intercomKey).apply()
+
+    var intercomRingSeconds: Int
+        get() = prefs.getInt(INTERCOM_RING_SECONDS, INTERCOM_DEFAULT_RING_SECONDS)
+        set(intercomRingSeconds) = prefs.edit().putInt(INTERCOM_RING_SECONDS, intercomRingSeconds).apply()
+
+    var intercomAnswerDelaySeconds: Int
+        get() = prefs.getInt(INTERCOM_ANSWER_DELAY_SECONDS, INTERCOM_DEFAULT_ANSWER_DELAY_SECONDS)
+        set(intercomAnswerDelaySeconds) = prefs.edit().putInt(INTERCOM_ANSWER_DELAY_SECONDS, intercomAnswerDelaySeconds).apply()
+
+    var intercomToneLengthMs: Int
+        get() = prefs.getInt(INTERCOM_TONE_LENGTH_MS, INTERCOM_DEFAULT_TONE_LENGTH_MS)
+        set(intercomToneLengthMs) = prefs.edit().putInt(INTERCOM_TONE_LENGTH_MS, intercomToneLengthMs).apply()
+
+    var intercomToneRepeatSeconds: Int
+        get() = prefs.getInt(INTERCOM_TONE_REPEAT_SECONDS, INTERCOM_DEFAULT_TONE_REPEAT_SECONDS)
+        set(intercomToneRepeatSeconds) = prefs.edit().putInt(INTERCOM_TONE_REPEAT_SECONDS, intercomToneRepeatSeconds).apply()
+
+    var intercomAutoOpenRemaining: Int
+        get() = prefs.getInt(INTERCOM_AUTO_OPEN_REMAINING, 0)
+        set(intercomAutoOpenRemaining) = prefs.edit().putInt(INTERCOM_AUTO_OPEN_REMAINING, intercomAutoOpenRemaining).apply()
+
+    var intercomAutoOpenUntil: Long
+        get() = prefs.getLong(INTERCOM_AUTO_OPEN_UNTIL, 0L)
+        set(intercomAutoOpenUntil) = prefs.edit().putLong(INTERCOM_AUTO_OPEN_UNTIL, intercomAutoOpenUntil).apply()
 }

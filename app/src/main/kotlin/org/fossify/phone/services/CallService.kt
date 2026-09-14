@@ -13,6 +13,7 @@ import org.fossify.phone.extensions.keyguardManager
 import org.fossify.phone.extensions.powerManager
 import org.fossify.phone.helpers.CallManager
 import org.fossify.phone.helpers.CallNotificationManager
+import org.fossify.phone.helpers.IntercomAutoOpen
 import org.fossify.phone.helpers.NoCall
 import org.fossify.phone.helpers.WatchCallState
 import org.fossify.phone.models.Events
@@ -30,6 +31,7 @@ class CallService : InCallService() {
                 callNotificationManager.setupNotification()
             }
             WatchCallState.onCallStateChanged(this@CallService, call)
+            IntercomAutoOpen.onCallStateChanged(this@CallService, call, state)
         }
     }
 
@@ -39,6 +41,7 @@ class CallService : InCallService() {
         CallManager.inCallService = this
         call.registerCallback(callListener)
         WatchCallState.onCallStateChanged(this, call)
+        IntercomAutoOpen.onCallAdded(this, call)
 
         // Incoming/Outgoing (locked): high priority (FSI)
         // Incoming (unlocked): if user opted in, low priority ➜ manual activity start, otherwise high priority (FSI)
@@ -71,6 +74,7 @@ class CallService : InCallService() {
     override fun onCallRemoved(call: Call) {
         super.onCallRemoved(call)
         call.unregisterCallback(callListener)
+        IntercomAutoOpen.onCallRemoved(call)
         val wasPrimaryCall = call == CallManager.getPrimaryCall()
         CallManager.onCallRemoved(call)
         if (CallManager.getPhoneState() == NoCall) {

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -36,13 +37,17 @@ import org.fossify.commons.helpers.isNougatPlus
 import org.fossify.commons.helpers.isQPlus
 import org.fossify.commons.helpers.isTiramisuPlus
 import org.fossify.commons.models.RadioItem
+import org.fossify.commons.views.MyTextView
 import org.fossify.phone.R
 import org.fossify.phone.databinding.ActivitySettingsBinding
+import org.fossify.phone.dialogs.EnterNumberDialog
 import org.fossify.phone.dialogs.ExportCallHistoryDialog
 import org.fossify.phone.dialogs.ManageVisibleTabsDialog
 import org.fossify.phone.extensions.canLaunchAccountsConfiguration
 import org.fossify.phone.extensions.config
 import org.fossify.phone.extensions.launchAccountsConfiguration
+import org.fossify.phone.helpers.INTERCOM_ALLOWED_KEYS
+import org.fossify.phone.helpers.INTERCOM_DEFAULT_KEY
 import org.fossify.phone.helpers.RecentsHelper
 import org.fossify.phone.models.RecentCall
 import java.util.Locale
@@ -115,6 +120,7 @@ class SettingsActivity : SimpleActivity() {
         setupDisableProximitySensor()
         setupDisableSwipeToAnswer()
         setupAlwaysShowFullscreen()
+        setupIntercom()
         setupCallsExport()
         setupCallsImport()
         updateTextColors(binding.settingsHolder)
@@ -126,6 +132,7 @@ class SettingsActivity : SimpleActivity() {
                 settingsStartupLabel,
                 settingsCallsLabel,
                 settingsDialpadSectionLabel,
+                settingsIntercomSectionLabel,
                 settingsMigrationSectionLabel
             ).forEach {
                 it.setTextColor(getProperPrimaryColor())
@@ -387,6 +394,75 @@ class SettingsActivity : SimpleActivity() {
             settingsAlwaysShowFullscreenHolder.setOnClickListener {
                 settingsAlwaysShowFullscreen.toggle()
                 config.alwaysShowFullscreen = settingsAlwaysShowFullscreen.isChecked
+            }
+        }
+    }
+
+    private fun setupIntercom() {
+        setupIntercomKey()
+        setupIntercomNumber(
+            holder = binding.settingsIntercomRingSecondsHolder,
+            valueView = binding.settingsIntercomRingSeconds,
+            titleId = R.string.intercom_ring_seconds,
+            readValue = { config.intercomRingSeconds },
+            writeValue = { config.intercomRingSeconds = it }
+        )
+        setupIntercomNumber(
+            holder = binding.settingsIntercomAnswerDelaySecondsHolder,
+            valueView = binding.settingsIntercomAnswerDelaySeconds,
+            titleId = R.string.intercom_answer_delay_seconds,
+            readValue = { config.intercomAnswerDelaySeconds },
+            writeValue = { config.intercomAnswerDelaySeconds = it }
+        )
+        setupIntercomNumber(
+            holder = binding.settingsIntercomToneLengthMsHolder,
+            valueView = binding.settingsIntercomToneLengthMs,
+            titleId = R.string.intercom_tone_length_ms,
+            readValue = { config.intercomToneLengthMs },
+            writeValue = { config.intercomToneLengthMs = it }
+        )
+        setupIntercomNumber(
+            holder = binding.settingsIntercomToneRepeatSecondsHolder,
+            valueView = binding.settingsIntercomToneRepeatSeconds,
+            titleId = R.string.intercom_tone_repeat_seconds,
+            readValue = { config.intercomToneRepeatSeconds },
+            writeValue = { config.intercomToneRepeatSeconds = it }
+        )
+    }
+
+    private fun setupIntercomKey() {
+        binding.settingsIntercomKey.text = config.intercomKey
+        binding.settingsIntercomKeyHolder.setOnClickListener {
+            val items = ArrayList<RadioItem>()
+            INTERCOM_ALLOWED_KEYS.forEachIndexed { index, key ->
+                items.add(RadioItem(index, key.toString()))
+            }
+
+            RadioGroupDialog(this@SettingsActivity, items, getIntercomKeyIndex()) {
+                config.intercomKey = INTERCOM_ALLOWED_KEYS[it as Int].toString()
+                binding.settingsIntercomKey.text = config.intercomKey
+            }
+        }
+    }
+
+    private fun getIntercomKeyIndex(): Int {
+        val storedKey = config.intercomKey.firstOrNull() ?: INTERCOM_DEFAULT_KEY.first()
+        val storedIndex = INTERCOM_ALLOWED_KEYS.indexOf(storedKey)
+        return if (storedIndex >= 0) storedIndex else INTERCOM_ALLOWED_KEYS.indexOf(INTERCOM_DEFAULT_KEY.first())
+    }
+
+    private fun setupIntercomNumber(
+        holder: View,
+        valueView: MyTextView,
+        titleId: Int,
+        readValue: () -> Int,
+        writeValue: (value: Int) -> Unit
+    ) {
+        valueView.text = readValue().toString()
+        holder.setOnClickListener {
+            EnterNumberDialog(this@SettingsActivity, titleId, readValue()) { enteredValue ->
+                writeValue(enteredValue)
+                valueView.text = enteredValue.toString()
             }
         }
     }
