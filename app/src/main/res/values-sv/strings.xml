@@ -86,4 +86,12 @@
     <string name="intercom_tone_length_ms">Tonlängd (millisekunder)</string>
     <string name="intercom_tone_repeat_seconds">Upprepa tonen var (sekunder)</string>
     <string name="invalid_number">Ange ett heltal, 0 eller större</string>
+    <string name="intercom_tab">Porttelefon</string>
+    <string name="intercom_openings">Öppningar</string>
+    <string name="intercom_hours">Timmar</string>
+    <string name="intercom_arm">Slå på automatisk öppning</string>
+    <string name="intercom_disarm">Slå av automatisk öppning</string>
+    <string name="intercom_auto_open_off">Automatisk öppning är av</string>
+    <string name="intercom_auto_open_armed">Automatisk öppning är på: %1$d kvar, till %2$s</string>
+    <string name="intercom_invalid_inputs">Ange heltal, 1 eller större</string>
 </resources>

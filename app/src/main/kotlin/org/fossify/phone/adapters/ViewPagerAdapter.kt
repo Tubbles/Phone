@@ -10,6 +10,7 @@ import org.fossify.phone.R
 import org.fossify.phone.activities.SimpleActivity
 import org.fossify.phone.extensions.config
 import org.fossify.phone.fragments.MyViewPagerFragment
+import org.fossify.phone.helpers.TAB_INTERCOM
 import org.fossify.phone.helpers.tabsList
 
 class ViewPagerAdapter(val activity: SimpleActivity) : PagerAdapter() {
@@ -47,6 +48,10 @@ class ViewPagerAdapter(val activity: SimpleActivity) : PagerAdapter() {
 
         if (showTabs and TAB_CALL_HISTORY > 0) {
             fragments.add(R.layout.fragment_recents)
+        }
+
+        if (showTabs and TAB_INTERCOM > 0) {
+            fragments.add(R.layout.fragment_intercom)
         }
 
         return if (position < fragments.size) fragments[position] else fragments.last()

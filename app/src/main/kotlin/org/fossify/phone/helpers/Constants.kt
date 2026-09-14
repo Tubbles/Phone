@@ -27,9 +27,12 @@ const val INTERCOM_TONE_REPEAT_SECONDS = "intercom_tone_repeat_seconds"
 const val INTERCOM_AUTO_OPEN_REMAINING = "intercom_auto_open_remaining"
 const val INTERCOM_AUTO_OPEN_UNTIL = "intercom_auto_open_until"
 
-const val ALL_TABS_MASK = TAB_CONTACTS or TAB_FAVORITES or TAB_CALL_HISTORY
+// Local to this app, deliberately above every TAB_* bit the commons library defines
+const val TAB_INTERCOM = 128
 
-val tabsList = arrayListOf(TAB_CONTACTS, TAB_FAVORITES, TAB_CALL_HISTORY)
+const val ALL_TABS_MASK = TAB_CONTACTS or TAB_FAVORITES or TAB_CALL_HISTORY or TAB_INTERCOM
+
+val tabsList = arrayListOf(TAB_CONTACTS, TAB_FAVORITES, TAB_CALL_HISTORY, TAB_INTERCOM)
 
 private const val PATH = "org.fossify.phone.action."
 const val ACCEPT_CALL = PATH + "ACCEPT_CALL"

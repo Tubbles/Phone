@@ -104,4 +104,12 @@
     <string name="intercom_tone_length_ms">Tone length (milliseconds)</string>
     <string name="intercom_tone_repeat_seconds">Repeat the tone every (seconds)</string>
     <string name="invalid_number">Enter a whole number, 0 or larger</string>
+    <string name="intercom_tab">Intercom</string>
+    <string name="intercom_openings">Openings</string>
+    <string name="intercom_hours">Hours</string>
+    <string name="intercom_arm">Turn on auto-open</string>
+    <string name="intercom_disarm">Turn off auto-open</string>
+    <string name="intercom_auto_open_off">Auto-open is off</string>
+    <string name="intercom_auto_open_armed">Auto-open is on: %1$d left, until %2$s</string>
+    <string name="intercom_invalid_inputs">Enter whole numbers, 1 or larger</string>
 </resources>
