@@ -196,6 +196,11 @@
             android:enabled="true"
             android:exported="false" />
 
+        <receiver
+            android:name=".receivers.IntercomActionReceiver"
+            android:enabled="true"
+            android:exported="false" />
+
         <!-- PineTime watch DTMF keys, re-broadcast to this package by the
              ClockSync hub app (see KeyToneReceiver). Must be exported: the
              sender is another app. -->

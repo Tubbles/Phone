@@ -118,4 +118,6 @@
     <string name="intercom_number_missing">Set the intercom number in Settings first</string>
     <string name="intercom_hang_up_seconds">Hang up after (seconds, 0 = never)</string>
     <string name="intercom_last_opened">Last opened %s</string>
+    <string name="intercom_notification_channel">Intercom auto-open</string>
+    <string name="intercom_notification_title">Auto-open is on</string>
 </resources>

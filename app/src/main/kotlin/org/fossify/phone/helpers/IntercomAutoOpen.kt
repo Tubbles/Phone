@@ -7,6 +7,8 @@ import android.telecom.Call
 import android.telecom.VideoProfile
 import android.telephony.PhoneNumberUtils
 import org.fossify.commons.extensions.normalizePhoneNumber
+import org.fossify.commons.extensions.toast
+import org.fossify.phone.R
 import org.fossify.phone.extensions.config
 import org.fossify.phone.extensions.getStateCompat
 import org.fossify.phone.extensions.isOutgoing
@@ -76,17 +78,43 @@ object IntercomAutoOpen {
     fun canArm(config: Config): Boolean = config.intercomNumber.isNotBlank()
 
     /** Arms auto-open for [openings] more calls, expiring [hours] from now. */
-    fun arm(config: Config, openings: Int, hours: Int) {
+    fun arm(context: Context, openings: Int, hours: Int) {
+        val config = context.config
         config.intercomAutoOpenRemaining = openings
         config.intercomAutoOpenUntil = System.currentTimeMillis() + hours * MILLIS_PER_HOUR
         config.intercomLastOpenings = openings
         config.intercomLastHours = hours
+        refreshSurfaces(context)
     }
 
     /** Disarms auto-open, leaving the static settings alone. */
-    fun disarm(config: Config) {
+    fun disarm(context: Context) {
+        val config = context.config
         config.intercomAutoOpenRemaining = 0
         config.intercomAutoOpenUntil = 0L
+        refreshSurfaces(context)
+    }
+
+    /**
+     * Flips auto-open in one tap, reusing the openings and hours from last time.
+     * This is the primitive behind every one-tap surface: the notification
+     * action, the Quick Settings tile and the home-screen widget.
+     */
+    fun toggle(context: Context) {
+        val config = context.config
+        when {
+            isArmed(config) -> disarm(context)
+            canArm(config) -> arm(context, config.intercomLastOpenings, config.intercomLastHours)
+            else -> context.toast(R.string.intercom_number_missing)
+        }
+    }
+
+    /**
+     * Brings everything that shows the armed state in line with the prefs:
+     * today the notification; the tile and widget hook in here.
+     */
+    fun refreshSurfaces(context: Context) {
+        IntercomArmedNotification.update(context)
     }
 
     /** Starts tracking [call] if it is the armed-for intercom calling in. */
@@ -160,16 +188,18 @@ object IntercomAutoOpen {
         }
         toneSequenceStarted = true
         handler.removeCallbacksAndMessages(null)
-        countOneOpening(context.config)
+        countOneOpening(context)
         handler.postDelayed({ playTone(call, timing) }, timing.answerDelayMillis)
         if (timing.hangUpMillis > 0) {
             handler.postDelayed({ call.disconnect() }, timing.answerDelayMillis + timing.hangUpMillis)
         }
     }
 
-    private fun countOneOpening(config: Config) {
+    private fun countOneOpening(context: Context) {
+        val config = context.config
         config.intercomAutoOpenRemaining = maxOf(0, config.intercomAutoOpenRemaining - 1)
         config.intercomLastOpenedAt = System.currentTimeMillis()
+        refreshSurfaces(context)
     }
 
     /**

@@ -58,6 +58,7 @@ class IntercomFragment(
     override fun onSearchQueryChanged(text: String) {}
 
     fun refreshItems() {
+        IntercomAutoOpen.refreshSurfaces(context)
         refreshIntercomNumber()
         refreshLastOpened()
         if (IntercomAutoOpen.isArmed(context.config)) {
@@ -112,7 +113,7 @@ class IntercomFragment(
 
     private fun toggleAutoOpen() {
         if (IntercomAutoOpen.isArmed(context.config)) {
-            IntercomAutoOpen.disarm(context.config)
+            IntercomAutoOpen.disarm(context)
         } else if (!armFromInputs()) {
             return
         }
@@ -135,7 +136,7 @@ class IntercomFragment(
             return false
         }
 
-        IntercomAutoOpen.arm(context.config, openings, hours)
+        IntercomAutoOpen.arm(context, openings, hours)
         return true
     }
 }

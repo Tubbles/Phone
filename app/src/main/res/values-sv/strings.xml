@@ -100,4 +100,6 @@
     <string name="intercom_number_missing">Ange porttelefonens nummer i inställningarna först</string>
     <string name="intercom_hang_up_seconds">Lägg på efter (sekunder, 0 = aldrig)</string>
     <string name="intercom_last_opened">Senast öppnad %s</string>
+    <string name="intercom_notification_channel">Porttelefon, automatisk öppning</string>
+    <string name="intercom_notification_title">Automatisk öppning är på</string>
 </resources>

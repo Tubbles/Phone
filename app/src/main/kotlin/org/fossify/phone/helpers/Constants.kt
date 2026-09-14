@@ -42,6 +42,8 @@ val tabsList = arrayListOf(TAB_CONTACTS, TAB_FAVORITES, TAB_CALL_HISTORY, TAB_IN
 private const val PATH = "org.fossify.phone.action."
 const val ACCEPT_CALL = PATH + "ACCEPT_CALL"
 const val DECLINE_CALL = PATH + "DECLINE_CALL"
+const val INTERCOM_DISARM = PATH + "INTERCOM_DISARM"
+const val INTERCOM_TOGGLE = PATH + "INTERCOM_TOGGLE"
 
 const val DIALPAD_TONE_LENGTH_MS = 150L // The length of DTMF tones in milliseconds
 
