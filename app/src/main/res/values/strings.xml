@@ -120,4 +120,9 @@
     <string name="intercom_last_opened">Last opened %s</string>
     <string name="intercom_notification_channel">Intercom auto-open</string>
     <string name="intercom_notification_title">Auto-open is on</string>
+    <string name="intercom_tile_label">Door auto-open</string>
+    <string name="intercom_widget_label">Intercom auto-open</string>
+    <string name="intercom_widget_description">Turns the intercom auto-open on or off</string>
+    <string name="intercom_short_off">Auto-open off</string>
+    <string name="intercom_short_armed">On: %1$d left, until %2$s</string>
 </resources>

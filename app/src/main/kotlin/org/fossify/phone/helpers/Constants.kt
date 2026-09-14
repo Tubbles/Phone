@@ -44,6 +44,7 @@ const val ACCEPT_CALL = PATH + "ACCEPT_CALL"
 const val DECLINE_CALL = PATH + "DECLINE_CALL"
 const val INTERCOM_DISARM = PATH + "INTERCOM_DISARM"
 const val INTERCOM_TOGGLE = PATH + "INTERCOM_TOGGLE"
+const val INTERCOM_REFRESH = PATH + "INTERCOM_REFRESH"
 
 const val DIALPAD_TONE_LENGTH_MS = 150L // The length of DTMF tones in milliseconds
 

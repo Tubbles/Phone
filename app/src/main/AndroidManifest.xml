@@ -191,6 +191,21 @@
             </intent-filter>
         </service>
 
+        <service
+            android:name=".services.IntercomTileService"
+            android:exported="true"
+            android:icon="@drawable/ic_intercom_vector"
+            android:label="@string/intercom_tile_label"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.quicksettings.TOGGLEABLE_TILE"
+                android:value="true" />
+        </service>
+
         <receiver
             android:name=".receivers.CallActionReceiver"
             android:enabled="true"
@@ -200,6 +215,19 @@
             android:name=".receivers.IntercomActionReceiver"
             android:enabled="true"
             android:exported="false" />
+
+        <receiver
+            android:name=".receivers.IntercomWidgetProvider"
+            android:exported="true"
+            android:label="@string/intercom_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/intercom_widget_info" />
+        </receiver>
 
         <!-- PineTime watch DTMF keys, re-broadcast to this package by the
              ClockSync hub app (see KeyToneReceiver). Must be exported: the

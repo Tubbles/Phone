@@ -1,17 +1,27 @@
 package org.fossify.phone.helpers
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
+import android.service.quicksettings.TileService
 import android.telecom.Call
 import android.telecom.VideoProfile
 import android.telephony.PhoneNumberUtils
+import android.text.format.DateFormat
 import org.fossify.commons.extensions.normalizePhoneNumber
 import org.fossify.commons.extensions.toast
 import org.fossify.phone.R
 import org.fossify.phone.extensions.config
 import org.fossify.phone.extensions.getStateCompat
 import org.fossify.phone.extensions.isOutgoing
+import org.fossify.phone.receivers.IntercomActionReceiver
+import org.fossify.phone.receivers.IntercomWidgetProvider
+import org.fossify.phone.services.IntercomTileService
+import java.util.Date
 
 /**
  * Opens the front door by itself while the user has armed auto-open.
@@ -45,6 +55,8 @@ import org.fossify.phone.extensions.isOutgoing
 object IntercomAutoOpen {
     private const val MILLIS_PER_SECOND = 1000L
     private const val MILLIS_PER_HOUR = 60 * 60 * MILLIS_PER_SECOND
+    private const val EXPIRY_REFRESH_CODE = 3
+    private const val PENDING_INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
     /** The static settings, read once when a call is picked up for tracking. */
     private data class IntercomTiming(
@@ -109,12 +121,56 @@ object IntercomAutoOpen {
         }
     }
 
+    /** The armed state in a few words, for the tile subtitle and the widget. */
+    fun shortStatusText(context: Context): String {
+        val config = context.config
+        if (!isArmed(config)) {
+            return context.getString(R.string.intercom_short_off)
+        }
+
+        val untilText = DateFormat.getTimeFormat(context).format(Date(config.intercomAutoOpenUntil))
+        return context.getString(R.string.intercom_short_armed, config.intercomAutoOpenRemaining, untilText)
+    }
+
     /**
-     * Brings everything that shows the armed state in line with the prefs:
-     * today the notification; the tile and widget hook in here.
+     * Brings everything that shows the armed state in line with the prefs: the
+     * ongoing notification, the home-screen widget and the Quick Settings tile.
+     * Quick Settings only redraws a tile it is listening to, so the tile is
+     * poked into a listening state rather than written to from here.
+     *
+     * Call this once per change. [arm] and [disarm] already end in it, so the
+     * one-tap surfaces get their redraw by going through those.
      */
     fun refreshSurfaces(context: Context) {
         IntercomArmedNotification.update(context)
+        IntercomWidgetProvider.updateAll(context)
+        TileService.requestListeningState(context, ComponentName(context, IntercomTileService::class.java))
+        scheduleExpiryRefresh(context)
+    }
+
+    /**
+     * Wakes us up a second past the deadline, so the tile and the widget stop
+     * claiming the mode is on the moment it ends. Nothing else runs at that
+     * time: the notification takes itself down with setTimeoutAfter, but the
+     * other two only change when something redraws them.
+     *
+     * A plain, inexact alarm is deliberate, since it needs no exact-alarm
+     * permission. Doze can hold it back, which costs nothing but a stale line
+     * of text on a surface the user is not looking at.
+     */
+    private fun scheduleExpiryRefresh(context: Context) {
+        val alarmManager = context.getSystemService(AlarmManager::class.java) ?: return
+        val refreshIntent = Intent(context, IntercomActionReceiver::class.java)
+        refreshIntent.action = INTERCOM_REFRESH
+        val refreshPendingIntent =
+            PendingIntent.getBroadcast(context, EXPIRY_REFRESH_CODE, refreshIntent, PENDING_INTENT_FLAGS)
+
+        val config = context.config
+        if (isArmed(config)) {
+            alarmManager.set(AlarmManager.RTC, config.intercomAutoOpenUntil + MILLIS_PER_SECOND, refreshPendingIntent)
+        } else {
+            alarmManager.cancel(refreshPendingIntent)
+        }
     }
 
     /** Starts tracking [call] if it is the armed-for intercom calling in. */

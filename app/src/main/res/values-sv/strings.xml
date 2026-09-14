@@ -102,4 +102,9 @@
     <string name="intercom_last_opened">Senast öppnad %s</string>
     <string name="intercom_notification_channel">Porttelefon, automatisk öppning</string>
     <string name="intercom_notification_title">Automatisk öppning är på</string>
+    <string name="intercom_tile_label">Dörröppning</string>
+    <string name="intercom_widget_label">Porttelefon, automatisk öppning</string>
+    <string name="intercom_widget_description">Slår på eller av automatisk dörröppning</string>
+    <string name="intercom_short_off">Auto-öppning av</string>
+    <string name="intercom_short_armed">På: %1$d kvar, till %2$s</string>
 </resources>

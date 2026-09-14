@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_intercom_holder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- The rounded background is its own ImageView because RemoteViews can
+         only tint a drawable through ImageView.setColorFilter. Tinting the
+         row itself would have to go through View.setBackgroundColor, which
+         throws the rounded shape away. -->
+    <ImageView
+        android:id="@+id/widget_intercom_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:src="@drawable/widget_round_background" />
+
+    <LinearLayout
+        android:id="@+id/widget_intercom_row"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/medium_margin">
+
+        <ImageView
+            android:id="@+id/widget_intercom_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:contentDescription="@string/intercom_tab"
+            android:src="@drawable/ic_intercom_vector" />
+
+        <TextView
+            android:id="@+id/widget_intercom_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:maxLines="2"
+            android:text="@string/intercom_short_off" />
+
+    </LinearLayout>
+</RelativeLayout>
