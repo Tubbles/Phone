@@ -119,4 +119,7 @@
     <string name="call_screening_test_matches">Matchar %s</string>
     <string name="call_screening_test_no_match">Matchar inte %s</string>
     <string name="call_screening_add_rule">Lägg till regel</string>
+    <string name="blocked_call_channel">Blockerade samtal</string>
+    <string name="blocked_call_title">Samtal blockerat</string>
+    <string name="blocked_call_text">%1$s blockerades av regeln %2$s</string>
 </resources>

@@ -8,8 +8,10 @@ import org.fossify.commons.extensions.isNumberBlocked
 import org.fossify.commons.helpers.ContactLookupResult
 import org.fossify.commons.helpers.SimpleContactsHelper
 import org.fossify.phone.extensions.config
+import org.fossify.phone.helpers.BlockedCallNotification
 import org.fossify.phone.helpers.CallScreeningRules
 import org.fossify.phone.helpers.NO_CALL_SCREENING_RULES
+import org.fossify.phone.helpers.ScreeningRule
 
 class SimpleCallScreeningService : CallScreeningService() {
 
@@ -22,7 +24,11 @@ class SimpleCallScreeningService : CallScreeningService() {
             }
 
             screeningDecision != null -> {
-                respondToCall(callDetails, isBlocked = screeningDecision)
+                if (screeningDecision.rule.block) {
+                    BlockedCallNotification.show(this, screeningDecision.canonicalNumber, screeningDecision.rule)
+                }
+
+                respondToCall(callDetails, isBlocked = screeningDecision.rule.block)
             }
 
             number != null && baseConfig.blockUnknownNumbers -> {
@@ -41,15 +47,21 @@ class SimpleCallScreeningService : CallScreeningService() {
         }
     }
 
+    // The rule that decided together with the number it decided on, so the notification can name
+    // both without canonicalizing the number a second time.
+    private data class RuleDecision(val canonicalNumber: String, val rule: ScreeningRule)
+
     // Null when there are no rules, no number, or no rule matched. Loading is skipped entirely for
     // the users who never added a rule, so screening stays as cheap as it was before.
-    private fun screenWithRules(number: String?): Boolean? {
+    private fun screenWithRules(number: String?): RuleDecision? {
         if (number == null || config.callScreeningRules == NO_CALL_SCREENING_RULES) {
             return null
         }
 
         val rules = CallScreeningRules.load(config)
-        return CallScreeningRules.evaluate(rules, CallScreeningRules.canonicalize(this, number))
+        val canonicalNumber = CallScreeningRules.canonicalize(this, number)
+        val decidingRule = CallScreeningRules.evaluateWithRule(rules, canonicalNumber) ?: return null
+        return RuleDecision(canonicalNumber, decidingRule)
     }
 
     private fun respondToCall(callDetails: Call.Details, isBlocked: Boolean) {

@@ -40,16 +40,22 @@ object CallScreeningRules {
     }
 
     /** Null when no rule matched, true to block the call, false to let it through. */
-    fun evaluate(rules: List<ScreeningRule>, canonicalNumber: String): Boolean? {
-        var decision: Boolean? = null
+    fun evaluate(rules: List<ScreeningRule>, canonicalNumber: String): Boolean? = evaluateWithRule(rules, canonicalNumber)?.block
+
+    /**
+     * The rule that decided, which is the last one that matched, or null when none did. Callers
+     * that have to name the rule, like the blocked call notification, go through this one.
+     */
+    fun evaluateWithRule(rules: List<ScreeningRule>, canonicalNumber: String): ScreeningRule? {
+        var decidingRule: ScreeningRule? = null
         for (rule in rules) {
             val regex = compile(rule.pattern) ?: continue
             if (regex.matches(canonicalNumber)) {
-                decision = rule.block
+                decidingRule = rule
             }
         }
 
-        return decision
+        return decidingRule
     }
 
     /** Null when the pattern compiles, otherwise the message to show the user. */

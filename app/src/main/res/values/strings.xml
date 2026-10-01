@@ -137,4 +137,7 @@
     <string name="call_screening_test_matches">Matches %s</string>
     <string name="call_screening_test_no_match">Does not match %s</string>
     <string name="call_screening_add_rule">Add rule</string>
+    <string name="blocked_call_channel">Blocked calls</string>
+    <string name="blocked_call_title">Call blocked</string>
+    <string name="blocked_call_text">%1$s blocked by rule %2$s</string>
 </resources>
