@@ -12,6 +12,7 @@ import org.fossify.commons.helpers.*
 import org.fossify.commons.models.contacts.Contact
 import org.fossify.phone.R
 import org.fossify.phone.activities.SimpleActivity
+import org.fossify.phone.extensions.config
 import org.fossify.phone.extensions.getAvailableSIMCardLabels
 import org.fossify.phone.models.RecentCall
 import org.fossify.phone.models.SIMAccount
@@ -152,16 +153,17 @@ class RecentsHelper(private val context: Context) {
             accountIdToSimAccountMap[it.handle.id] = it
         }
 
+        val filteredSelection = withBlockedCallsFilter(selection)
         val cursor = if (isNougatPlus()) {
             // https://issuetracker.google.com/issues/175198972?pli=1#comment6
             val limitedUri = contentUri.buildUpon()
                 .appendQueryParameter(Calls.LIMIT_PARAM_KEY, queryLimit.toString())
                 .build()
             val sortOrder = "${Calls.DATE} DESC"
-            context.contentResolver.query(limitedUri, projection, selection, selectionParams, sortOrder)
+            context.contentResolver.query(limitedUri, projection, filteredSelection, selectionParams, sortOrder)
         } else {
             val sortOrder = "${Calls.DATE} DESC LIMIT $queryLimit"
-            context.contentResolver.query(contentUri, projection, selection, selectionParams, sortOrder)
+            context.contentResolver.query(contentUri, projection, filteredSelection, selectionParams, sortOrder)
         }
 
         val contactsWithMultipleNumbers = contacts.filter { it.phoneNumbers.size > 1 }
@@ -282,6 +284,21 @@ class RecentsHelper(private val context: Context) {
 
         return recentCalls
             .filter { !context.isNumberBlocked(it.phoneNumber, blockedNumbers) }
+    }
+
+    /**
+     * The recents tab's three way choice over the entries Android writes for a blocked call, as an
+     * extra clause on the call log query. The type constants go into the selection as literals, so
+     * selectionParams is left exactly as the caller passed it.
+     */
+    private fun withBlockedCallsFilter(selection: String?): String? {
+        val typeClause = when (context.config.blockedCallsFilter) {
+            BLOCKED_CALLS_HIDE -> "${Calls.TYPE} != ${Calls.BLOCKED_TYPE}"
+            BLOCKED_CALLS_ONLY -> "${Calls.TYPE} = ${Calls.BLOCKED_TYPE}"
+            else -> return selection
+        }
+
+        return if (selection == null) typeClause else "($selection) AND $typeClause"
     }
 
     fun removeRecentCalls(ids: List<Int>, callback: () -> Unit) {

@@ -38,6 +38,7 @@ class ManageCallScreeningRulesActivity : SimpleActivity() {
             callScreeningRulesAdd.setOnClickListener { showRuleDialog(null) }
         }
 
+        setupBlockHiddenNumbers()
         rules.addAll(CallScreeningRules.load(config))
         rulesAdapter = CallScreeningRulesAdapter(this, rules, binding.callScreeningRulesList, ::saveRules) { clickedRule ->
             showRuleDialog(clickedRule as ScreeningRule)
@@ -58,6 +59,19 @@ class ManageCallScreeningRulesActivity : SimpleActivity() {
         // the rules stay either way, they just do nothing until Android grants the screening role
         if (requestCode == REQUEST_CODE_SET_DEFAULT_CALLER_ID && resultCode != Activity.RESULT_OK) {
             toast(R.string.must_make_default_caller_id_app, length = Toast.LENGTH_LONG)
+        }
+    }
+
+    // The same commons pref Fossify's own blocked numbers screen carries, which Phone T keeps behind
+    // the Thank You dialog, so this is the only place it can be reached from.
+    private fun setupBlockHiddenNumbers() {
+        binding.apply {
+            callScreeningBlockHidden.isChecked = config.blockHiddenNumbers
+            callScreeningBlockHiddenHolder.setOnClickListener {
+                callScreeningBlockHidden.toggle()
+                config.blockHiddenNumbers = callScreeningBlockHidden.isChecked
+                requestCallerIdRoleIfNeeded()
+            }
         }
     }
 
@@ -82,7 +96,7 @@ class ManageCallScreeningRulesActivity : SimpleActivity() {
     }
 
     private fun requestCallerIdRoleIfNeeded() {
-        if (rules.isEmpty() || askedToBecomeCallerIdApp || !isQPlus()) {
+        if ((rules.isEmpty() && !config.blockHiddenNumbers) || askedToBecomeCallerIdApp || !isQPlus()) {
             return
         }
 

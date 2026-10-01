@@ -41,6 +41,9 @@ import org.fossify.phone.fragments.FavoritesFragment
 import org.fossify.phone.fragments.IntercomFragment
 import org.fossify.phone.fragments.MyViewPagerFragment
 import org.fossify.phone.fragments.RecentsFragment
+import org.fossify.phone.helpers.BLOCKED_CALLS_HIDE
+import org.fossify.phone.helpers.BLOCKED_CALLS_ONLY
+import org.fossify.phone.helpers.BLOCKED_CALLS_SHOW_ALL
 import org.fossify.phone.helpers.OPEN_DIAL_PAD_AT_LAUNCH
 import org.fossify.phone.helpers.RecentsHelper
 import org.fossify.phone.helpers.TAB_INTERCOM
@@ -199,6 +202,7 @@ class MainActivity : SimpleActivity() {
         val currentFragment = getCurrentFragment()
         binding.mainMenu.requireToolbar().menu.apply {
             findItem(R.id.clear_call_history).isVisible = currentFragment == getRecentsFragment()
+            findItem(R.id.blocked_calls_filter).isVisible = currentFragment == getRecentsFragment()
             findItem(R.id.sort).isVisible = currentFragment != getRecentsFragment() && currentFragment != getIntercomFragment()
             findItem(R.id.filter).isVisible = currentFragment != getRecentsFragment() && currentFragment != getIntercomFragment()
             findItem(R.id.create_new_contact).isVisible = currentFragment == getContactsFragment()
@@ -227,6 +231,7 @@ class MainActivity : SimpleActivity() {
             requireToolbar().setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
                     R.id.clear_call_history -> clearCallHistory()
+                    R.id.blocked_calls_filter -> showBlockedCallsFilterDialog()
                     R.id.create_new_contact -> launchCreateNewContactIntent()
                     R.id.sort -> showSortingDialog(showCustomSorting = getCurrentFragment() is FavoritesFragment)
                     R.id.filter -> showFilterDialog()
@@ -611,6 +616,19 @@ class MainActivity : SimpleActivity() {
                     getCurrentFragment()?.onSearchQueryChanged(binding.mainMenu.getCurrentQuery())
                 }
             }
+        }
+    }
+
+    private fun showBlockedCallsFilterDialog() {
+        val items = arrayListOf(
+            RadioItem(BLOCKED_CALLS_SHOW_ALL, getString(R.string.blocked_calls_show_all)),
+            RadioItem(BLOCKED_CALLS_HIDE, getString(R.string.blocked_calls_hide)),
+            RadioItem(BLOCKED_CALLS_ONLY, getString(R.string.blocked_calls_only))
+        )
+
+        RadioGroupDialog(this, items, config.blockedCallsFilter) {
+            config.blockedCallsFilter = it as Int
+            getRecentsFragment()?.refreshItems(invalidate = true)
         }
     }
 

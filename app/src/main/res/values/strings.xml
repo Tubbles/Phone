@@ -140,4 +140,10 @@
     <string name="blocked_call_channel">Blocked calls</string>
     <string name="blocked_call_title">Call blocked</string>
     <string name="blocked_call_text">%1$s blocked by rule %2$s</string>
+    <string name="call_screening_block_hidden">Block hidden numbers</string>
+    <string name="blocked_call_hidden_text">Hidden number blocked</string>
+    <string name="blocked_calls_filter">Blocked calls</string>
+    <string name="blocked_calls_show_all">Show all calls</string>
+    <string name="blocked_calls_hide">Hide blocked calls</string>
+    <string name="blocked_calls_only">Only blocked calls</string>
 </resources>

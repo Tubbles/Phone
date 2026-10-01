@@ -28,7 +28,7 @@ class SimpleCallScreeningService : CallScreeningService() {
                     BlockedCallNotification.show(this, screeningDecision.canonicalNumber, screeningDecision.rule)
                 }
 
-                respondToCall(callDetails, isBlocked = screeningDecision.rule.block)
+                respondToCall(callDetails, isBlocked = screeningDecision.rule.block, keepInCallLog = true)
             }
 
             number != null && baseConfig.blockUnknownNumbers -> {
@@ -38,7 +38,8 @@ class SimpleCallScreeningService : CallScreeningService() {
             }
 
             number == null && baseConfig.blockHiddenNumbers -> {
-                respondToCall(callDetails, isBlocked = true)
+                BlockedCallNotification.showHidden(this)
+                respondToCall(callDetails, isBlocked = true, keepInCallLog = true)
             }
 
             else -> {
@@ -64,11 +65,13 @@ class SimpleCallScreeningService : CallScreeningService() {
         return RuleDecision(canonicalNumber, decidingRule)
     }
 
-    private fun respondToCall(callDetails: Call.Details, isBlocked: Boolean) {
+    // Keeping the call log entry lets Android write the call itself as a native BLOCKED_TYPE row,
+    // which is how a rule block or a hidden number block shows up in the recents tab afterwards.
+    private fun respondToCall(callDetails: Call.Details, isBlocked: Boolean, keepInCallLog: Boolean = false) {
         val response = CallResponse.Builder()
             .setDisallowCall(isBlocked)
             .setRejectCall(isBlocked)
-            .setSkipCallLog(isBlocked)
+            .setSkipCallLog(isBlocked && !keepInCallLog)
             .setSkipNotification(isBlocked)
             .build()
 

@@ -32,6 +32,7 @@ const val INTERCOM_LAST_OPENINGS = "intercom_last_openings"
 const val INTERCOM_LAST_HOURS = "intercom_last_hours"
 const val INTERCOM_LAST_OPENED_AT = "intercom_last_opened_at"
 const val CALL_SCREENING_RULES = "call_screening_rules"
+const val BLOCKED_CALLS_FILTER = "blocked_calls_filter"
 
 // Local to this app, deliberately above every TAB_* bit the commons library defines
 const val TAB_INTERCOM = 128
@@ -62,3 +63,8 @@ const val INTERCOM_ALLOWED_KEYS = "0123456789*#" // The DTMF characters the door
 
 // An empty JSON array, the call screening rule list of a user who has not added any rule
 const val NO_CALL_SCREENING_RULES = "[]"
+
+// How the recents tab treats the call log entries Android writes for a blocked call
+const val BLOCKED_CALLS_SHOW_ALL = 0
+const val BLOCKED_CALLS_HIDE = 1
+const val BLOCKED_CALLS_ONLY = 2

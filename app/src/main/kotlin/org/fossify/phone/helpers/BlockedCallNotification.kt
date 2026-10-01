@@ -10,15 +10,17 @@ import org.fossify.commons.extensions.hasPermission
 import org.fossify.commons.extensions.notificationManager
 import org.fossify.commons.helpers.PERMISSION_POST_NOTIFICATIONS
 import org.fossify.phone.R
-import org.fossify.phone.activities.ManageCallScreeningRulesActivity
+import org.fossify.phone.activities.MainActivity
 
 /**
- * The notification posted whenever a [ScreeningRule] blocks an incoming call.
+ * The notification posted whenever a [ScreeningRule] or the hidden number switch blocks an
+ * incoming call.
  *
- * A blocked call otherwise leaves no trace at all: the screening response skips the call log and
- * the system's own missed call notification, so this is the only place the number shows up. It
- * names the rule that caught it too, since a pattern that is a little too wide is the thing one
- * actually wants to notice, and a tap opens the rule list to fix it.
+ * The screening response keeps the call in the call log, so a blocked call does show up in the
+ * recents tab afterwards, but it skips the system's own missed call notification and so passes by
+ * unnoticed. This names the number and, for a rule block, the rule that caught it, since a pattern
+ * that is a little too wide is the thing one actually wants to notice. A tap opens the recents tab,
+ * where the blocked call sits with the rest of the history.
  *
  * Only the canonical number is shown. Looking up a contact name would be the wrong way around:
  * these are the calls nobody in the contact list made.
@@ -27,16 +29,24 @@ object BlockedCallNotification {
     private const val CHANNEL_ID = "blocked_calls"
 
     /** Deliberately apart from the request codes IntercomArmedNotification hands out. */
-    private const val OPEN_RULES_CODE = 2
+    private const val OPEN_RECENTS_CODE = 2
     private const val PENDING_INTENT_FLAGS = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
     fun show(context: Context, canonicalNumber: String, rule: ScreeningRule) {
+        notifyBlockedCall(context, context.getString(R.string.blocked_call_text, canonicalNumber, rule.pattern))
+    }
+
+    fun showHidden(context: Context) {
+        notifyBlockedCall(context, context.getString(R.string.blocked_call_hidden_text))
+    }
+
+    private fun notifyBlockedCall(context: Context, text: String) {
         if (!context.hasPermission(PERMISSION_POST_NOTIFICATIONS)) {
             return
         }
 
         createNotificationChannel(context)
-        val notification = buildNotification(context, canonicalNumber, rule)
+        val notification = buildNotification(context, text)
         context.notificationManager.notify(notificationId(), notification)
     }
 
@@ -53,19 +63,24 @@ object BlockedCallNotification {
         }
     }
 
-    private fun buildNotification(context: Context, canonicalNumber: String, rule: ScreeningRule): Notification {
+    private fun buildNotification(context: Context, text: String): Notification {
         return Notification.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_block_vector)
             .setContentTitle(context.getString(R.string.blocked_call_title))
-            .setContentText(context.getString(R.string.blocked_call_text, canonicalNumber, rule.pattern))
-            .setContentIntent(openRulesPendingIntent(context))
+            .setContentText(text)
+            .setContentIntent(openRecentsPendingIntent(context))
             .setAutoCancel(true)
             .setShowWhen(true)
             .build()
     }
 
-    private fun openRulesPendingIntent(context: Context): PendingIntent {
-        val openRulesIntent = Intent(context, ManageCallScreeningRulesActivity::class.java)
-        return PendingIntent.getActivity(context, OPEN_RULES_CODE, openRulesIntent, PENDING_INTENT_FLAGS)
+    /** ACTION_VIEW is what MainActivity reads to open the call history tab rather than the default one. */
+    private fun openRecentsPendingIntent(context: Context): PendingIntent {
+        val openRecentsIntent = Intent(context, MainActivity::class.java).apply {
+            action = Intent.ACTION_VIEW
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+
+        return PendingIntent.getActivity(context, OPEN_RECENTS_CODE, openRecentsIntent, PENDING_INTENT_FLAGS)
     }
 }

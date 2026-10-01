@@ -187,4 +187,8 @@ class Config(context: Context) : BaseConfig(context) {
     var callScreeningRules: String
         get() = prefs.getString(CALL_SCREENING_RULES, NO_CALL_SCREENING_RULES) ?: NO_CALL_SCREENING_RULES
         set(callScreeningRules) = prefs.edit().putString(CALL_SCREENING_RULES, callScreeningRules).apply()
+
+    var blockedCallsFilter: Int
+        get() = prefs.getInt(BLOCKED_CALLS_FILTER, BLOCKED_CALLS_SHOW_ALL)
+        set(blockedCallsFilter) = prefs.edit().putInt(BLOCKED_CALLS_FILTER, blockedCallsFilter).apply()
 }

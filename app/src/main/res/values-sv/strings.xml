@@ -122,4 +122,10 @@
     <string name="blocked_call_channel">Blockerade samtal</string>
     <string name="blocked_call_title">Samtal blockerat</string>
     <string name="blocked_call_text">%1$s blockerades av regeln %2$s</string>
+    <string name="call_screening_block_hidden">Blockera dolda nummer</string>
+    <string name="blocked_call_hidden_text">Dolt nummer blockerat</string>
+    <string name="blocked_calls_filter">Blockerade samtal</string>
+    <string name="blocked_calls_show_all">Visa alla samtal</string>
+    <string name="blocked_calls_hide">Dölj blockerade samtal</string>
+    <string name="blocked_calls_only">Bara blockerade samtal</string>
 </resources>

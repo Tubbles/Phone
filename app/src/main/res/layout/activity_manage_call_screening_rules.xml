@@ -35,6 +35,21 @@
             android:text="@string/call_screening_rules_hint"
             android:textSize="@dimen/normal_text_size" />
 
+        <RelativeLayout
+            android:id="@+id/call_screening_block_hidden_holder"
+            style="@style/SettingsHolderSwitchStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <org.fossify.commons.views.MyMaterialSwitch
+                android:id="@+id/call_screening_block_hidden"
+                style="@style/SettingsSwitchStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/call_screening_block_hidden" />
+
+        </RelativeLayout>
+
         <org.fossify.commons.views.MyRecyclerView
             android:id="@+id/call_screening_rules_list"
             android:layout_width="match_parent"
