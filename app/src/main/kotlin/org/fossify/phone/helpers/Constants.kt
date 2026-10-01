@@ -31,6 +31,7 @@ const val INTERCOM_AUTO_OPEN_UNTIL = "intercom_auto_open_until"
 const val INTERCOM_LAST_OPENINGS = "intercom_last_openings"
 const val INTERCOM_LAST_HOURS = "intercom_last_hours"
 const val INTERCOM_LAST_OPENED_AT = "intercom_last_opened_at"
+const val CALL_SCREENING_RULES = "call_screening_rules"
 
 // Local to this app, deliberately above every TAB_* bit the commons library defines
 const val TAB_INTERCOM = 128
@@ -58,3 +59,6 @@ const val INTERCOM_DEFAULT_HANG_UP_SECONDS = 30 // Hang up this long after the f
 const val INTERCOM_DEFAULT_OPENINGS = 1 // How many openings the arming tab suggests
 const val INTERCOM_DEFAULT_HOURS = 6 // How many hours the arming tab suggests
 const val INTERCOM_ALLOWED_KEYS = "0123456789*#" // The DTMF characters the door key may be picked from
+
+// An empty JSON array, the call screening rule list of a user who has not added any rule
+const val NO_CALL_SCREENING_RULES = "[]"

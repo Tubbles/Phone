@@ -104,6 +104,7 @@ class SettingsActivity : SimpleActivity() {
         setupUseEnglish()
         setupLanguage()
         setupManageBlockedNumbers()
+        setupCallScreeningRules()
         setupManageSpeedDial()
         setupChangeDateTimeFormat()
         setupFontSize()
@@ -202,6 +203,14 @@ class SettingsActivity : SimpleActivity() {
                 } else {
                     FeatureLockedDialog(this@SettingsActivity) { }
                 }
+            }
+        }
+    }
+
+    private fun setupCallScreeningRules() {
+        binding.settingsCallScreeningRulesHolder.setOnClickListener {
+            Intent(this, ManageCallScreeningRulesActivity::class.java).apply {
+                startActivity(this)
             }
         }
     }

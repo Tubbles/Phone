@@ -108,4 +108,15 @@
     <string name="intercom_short_off">Auto-öppning av</string>
     <string name="intercom_short_armed">På: %1$d kvar, till %2$s</string>
     <string name="use_as_intercom_number">Använd som porttelefonens nummer</string>
+
+    <!-- Call screening rules -->
+    <string name="call_screening_rules">Regler för samtalsfiltrering</string>
+    <string name="call_screening_rules_hint">Reglerna körs uppifrån och ned mot numret i internationell form, till exempel +46701234567. Den sista regeln som matchar avgör, och ingen träff släpper igenom samtalet. Exempel: blockera .* följt av tillåt \\+46.* blockerar alla utländska nummer.</string>
+    <string name="call_screening_block">Blockera</string>
+    <string name="call_screening_allow">Tillåt</string>
+    <string name="call_screening_pattern">Reguljärt uttryck</string>
+    <string name="call_screening_test_number">Testnummer (valfritt)</string>
+    <string name="call_screening_test_matches">Matchar %s</string>
+    <string name="call_screening_test_no_match">Matchar inte %s</string>
+    <string name="call_screening_add_rule">Lägg till regel</string>
 </resources>

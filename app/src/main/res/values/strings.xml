@@ -126,4 +126,15 @@
     <string name="intercom_short_off">Auto-open off</string>
     <string name="intercom_short_armed">On: %1$d left, until %2$s</string>
     <string name="use_as_intercom_number">Use as intercom number</string>
+
+    <!-- Call screening rules -->
+    <string name="call_screening_rules">Call screening rules</string>
+    <string name="call_screening_rules_hint">Rules run top to bottom against the caller\'s number in international form, like +46701234567. The last matching rule decides, and no match lets the call through. Example: block .* then allow \\+46.* blocks every foreign number.</string>
+    <string name="call_screening_block">Block</string>
+    <string name="call_screening_allow">Allow</string>
+    <string name="call_screening_pattern">Regular expression</string>
+    <string name="call_screening_test_number">Test number (optional)</string>
+    <string name="call_screening_test_matches">Matches %s</string>
+    <string name="call_screening_test_no_match">Does not match %s</string>
+    <string name="call_screening_add_rule">Add rule</string>
 </resources>

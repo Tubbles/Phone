@@ -93,6 +93,13 @@
             android:parentActivityName=".activities.SettingsActivity" />
 
         <activity
+            android:name=".activities.ManageCallScreeningRulesActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:label="@string/call_screening_rules"
+            android:parentActivityName=".activities.SettingsActivity" />
+
+        <activity
             android:name=".activities.ConferenceActivity"
             android:configChanges="orientation"
             android:exported="false"

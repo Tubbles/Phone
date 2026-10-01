@@ -19,7 +19,7 @@ class Config(context: Context) : BaseConfig(context) {
         fun newInstance(context: Context) = Config(context)
     }
 
-    private val regionHint: String by lazy {
+    internal val regionHint: String by lazy {
         val telephonyManager = context.getSystemService(TelephonyManager::class.java)
         listOf(
             telephonyManager?.simCountryIso,
@@ -183,4 +183,8 @@ class Config(context: Context) : BaseConfig(context) {
     var intercomLastOpenedAt: Long
         get() = prefs.getLong(INTERCOM_LAST_OPENED_AT, 0L)
         set(intercomLastOpenedAt) = prefs.edit().putLong(INTERCOM_LAST_OPENED_AT, intercomLastOpenedAt).apply()
+
+    var callScreeningRules: String
+        get() = prefs.getString(CALL_SCREENING_RULES, NO_CALL_SCREENING_RULES) ?: NO_CALL_SCREENING_RULES
+        set(callScreeningRules) = prefs.edit().putString(CALL_SCREENING_RULES, callScreeningRules).apply()
 }
